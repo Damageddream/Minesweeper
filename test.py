@@ -2,9 +2,8 @@ a = set()
 
 b = {(1,2)}
 
-c = 1
+c = (1,3)
 
-if len(b) == c:
-    a = b
 
-print(a)
+
+print(c in b)
