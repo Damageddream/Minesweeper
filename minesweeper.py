@@ -165,6 +165,7 @@ class MinesweeperAI():
         for sentence in self.knowledge:
             sentence.mark_safe(cell)
 
+
     def add_knowledge(self, cell, count):
         """
         Called when the Minesweeper board tells us, for a given
@@ -180,7 +181,29 @@ class MinesweeperAI():
             5) add any new sentences to the AI's knowledge base
                if they can be inferred from existing knowledge
         """
-        raise NotImplementedError
+        self.moves_made.add(cell)
+        self.mark_safe(cell)
+           
+        cells = []
+        # Loop over all cells within one row and column
+        for i in range(cell[0] - 1, cell[0] + 2):
+            for j in range(cell[1] - 1, cell[1] + 2):
+
+                # Ignore the cell itself
+                if (i, j) == cell:
+                    continue
+
+                # Update cells if cell in bounds 
+                if 0 <= i < self.height and 0 <= j < self.width:
+                    if (i,j) not in self.mines and (i,j) not in self.safes:
+                        cells.append((i,j))
+
+        self.knowledge.append(Sentence(cells, count))
+
+        for sentence in self.knowledge:
+            self.mines.union(sentence.mark_mine())
+            self.safes.union(sentence.mark_safe())
+
 
     def make_safe_move(self):
         """
