@@ -200,10 +200,20 @@ class MinesweeperAI():
 
         self.knowledge.append(Sentence(cells, count))
 
-        for sentence in self.knowledge:
-            self.mines.union(sentence.mark_mine())
-            self.safes.union(sentence.mark_safe())
-
+        count = 0
+        while count < len(self.knowledge):
+            count = len(self.knowledge)
+            for sentence in self.knowledge:
+                self.mines.union(sentence.mark_mine())
+                self.safes.union(sentence.mark_safe())
+                for second_sentence in self.knowledge:
+                    if second_sentence.issubset(sentence):
+                        self.knowledge.append(sentence.difference(second_sentence))
+        """
+        when set1 = count1 and set2 = count2 where set1 is a subset of set2, 
+        then we can construct the new sentence set2 - set1 = count2 - count1. 
+        """
+        
 
     def make_safe_move(self):
         """
