@@ -100,6 +100,11 @@ class Sentence():
 
     def __str__(self):
         return f"{self.cells} = {self.count}"
+    
+    def show_cells(self):
+        return self.cells
+    def show_count(self):
+        return self.count
 
     def known_mines(self):
         """
@@ -183,6 +188,7 @@ class MinesweeperAI():
         """
         self.moves_made.add(cell)
         self.mark_safe(cell)
+
            
         cells = []
         # Loop over all cells within one row and column
@@ -204,11 +210,25 @@ class MinesweeperAI():
         while count < len(self.knowledge):
             count = len(self.knowledge)
             for sentence in self.knowledge:
-                self.mines.union(sentence.mark_mine())
-                self.safes.union(sentence.mark_safe())
+                print(sentence)
+                print(sentence.known_safes())
+                new_safes = sentence.known_safes().copy()
+                for safe in new_safes:
+                    self.mark_safe(safe)
+                
+                self.mines.union(sentence.known_mines())
+                self.safes = self.safes.union(new_safes)
+                print(self.safes)
+
+
                 for second_sentence in self.knowledge:
-                    if second_sentence.issubset(sentence):
-                        self.knowledge.append(sentence.difference(second_sentence))
+                    pass
+                    # if second_sentence.cells.issubset(sentence.cells) and sentence.cells != second_sentence.cells:
+                    #     print('new', sentence.cells.symmetric_difference(second_sentence.cells))
+                #     if second_sentence.cells.issubset(sentence.cells):
+                #         new_cells = sentence.cells.difference(second_sentence.cells)
+                #         new_count = sentence.count - second_sentence.count
+                #         self.knowledge.append(Sentence(new_cells, new_count))
         """
         when set1 = count1 and set2 = count2 where set1 is a subset of set2, 
         then we can construct the new sentence set2 - set1 = count2 - count1. 
@@ -224,7 +244,10 @@ class MinesweeperAI():
         This function may use the knowledge in self.mines, self.safes
         and self.moves_made, but should not modify any of those values.
         """
-        raise NotImplementedError
+        for move in self.safes:
+            if move not in self.moves_made:
+                return move
+        return None
 
     def make_random_move(self):
         """
@@ -233,4 +256,8 @@ class MinesweeperAI():
             1) have not already been chosen, and
             2) are not known to be mines
         """
-        raise NotImplementedError
+        for i in range(self.width):
+            for j in range(self.height):
+                if (i,j) not in self.moves_made and (i,j) not in self.mines:
+                    return (i,j)
+        return None
