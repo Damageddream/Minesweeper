@@ -225,8 +225,6 @@ class MinesweeperAI():
                         new_cells = sentence.cells.difference(second_sentence.cells)
                         new_count = sentence.count - second_sentence.count
                         self.knowledge.append(Sentence(new_cells, new_count))
-                        print(sentence.cells, second_sentence.cells)
-                        print(self.knowledge[-1].cells)
         """
         when set1 = count1 and set2 = count2 where set1 is a subset of set2, 
         then we can construct the new sentence set2 - set1 = count2 - count1. 
