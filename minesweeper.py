@@ -210,25 +210,23 @@ class MinesweeperAI():
         while count < len(self.knowledge):
             count = len(self.knowledge)
             for sentence in self.knowledge:
-                print(sentence)
-                print(sentence.known_safes())
                 new_safes = sentence.known_safes().copy()
                 for safe in new_safes:
                     self.mark_safe(safe)
-                
-                self.mines.union(sentence.known_mines())
                 self.safes = self.safes.union(new_safes)
-                print(self.safes)
-
-
+                new_mines = sentence.known_mines().copy()
+                for mine in new_mines:
+                    self.mark_mine(mine)
+                self.mines = self.mines.union(new_mines)
                 for second_sentence in self.knowledge:
-                    pass
-                    # if second_sentence.cells.issubset(sentence.cells) and sentence.cells != second_sentence.cells:
-                    #     print('new', sentence.cells.symmetric_difference(second_sentence.cells))
-                #     if second_sentence.cells.issubset(sentence.cells):
-                #         new_cells = sentence.cells.difference(second_sentence.cells)
-                #         new_count = sentence.count - second_sentence.count
-                #         self.knowledge.append(Sentence(new_cells, new_count))
+                    if len(second_sentence.cells) == 0:
+                        break
+                    if second_sentence.cells.issubset(sentence.cells) and  sentence.cells != second_sentence.cells:
+                        new_cells = sentence.cells.difference(second_sentence.cells)
+                        new_count = sentence.count - second_sentence.count
+                        self.knowledge.append(Sentence(new_cells, new_count))
+                        print(sentence.cells, second_sentence.cells)
+                        print(self.knowledge[-1].cells)
         """
         when set1 = count1 and set2 = count2 where set1 is a subset of set2, 
         then we can construct the new sentence set2 - set1 = count2 - count1. 
